@@ -27,8 +27,8 @@ Find the reflection of the image.
 Rotate the image using angle function.
 
 ## Program:
-## Developed By: THARIKA S
-## Register Number: 212222230159
+## Developed By: LISIANA T
+## Register Number: 212222240053
 ## i)Original Image:
 ```
 import numpy as np
