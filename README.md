@@ -150,3 +150,4 @@ plt.show()
 ## Result: 
 
 Thus the different image transformations such as Translation, Scaling, Shearing, Reflection, Rotation and Cropping are done using OpenCV and python programming.
+
