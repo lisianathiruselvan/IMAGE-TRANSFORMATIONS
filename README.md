@@ -8,143 +8,144 @@ To perform image transformation such as Translation, Scaling, Shearing, Reflecti
 Anaconda - Python 3.7
 
 ## Algorithm:
-### Step1:
-Import the necessary libraries and read the original image and save it as a image variable.
+### Step1: 
+ Import necessary libraries such as OpenCV, NumPy, and Matplotlib for image processing and visualization.
 
 ### Step2:
-Translate the image using a function warpPerpective()
+Read the input image using cv2.imread() and store it in a variable for further processing.
 
 ### Step3:
-Scale the image by multiplying the rows and columns with a float value.
+Apply various transformations like translation, scaling, shearing, reflection, rotation, and cropping by defining corresponding functions:
+1. Translation moves the image along the x or y-axis.
+2. Scaling resizes the image by scaling factors.
+3. Shearing distorts the image along one axis.
+4. Reflection flips the image horizontally or vertically.
+5. Rotation rotates the image by a given angle.
 
 ### Step4:
-Shear the image in both the rows and columns.
+Display the transformed images using Matplotlib for visualization. Convert the BGR image to RGB format to ensure proper color representation.
 
 ### Step5:
-Find the reflection of the image.
-
-### step 6:
-Rotate the image using angle function.
+Save or display the final transformed images for analysis and use plt.show() to display them inline in Jupyter or compatible environments.
 
 ## Program:
-## Developed By: LISIANA T
-## Register Number: 212222240053
-## i)Original Image:
-```
-import numpy as np
+
+#### Developed By: Lisiana T
+#### Register Number: 212222240053
+```python
 import cv2
+import numpy as np
 import matplotlib.pyplot as plt
-input_img = cv2.imread("rapunzel.jpg")
-# cv2.imshow("image webp",input_img)
-input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2RGB)
-plt.axis('off')
-plt.imshow(input_img)
-plt.show()
-```
-## ii)Image Translation
-```
-rows,cols,dim=input_img.shape
-M=np.float32([[1,0,50],  [0,1,100],  [0,0,1]])
-translated_image=cv2.warpPerspective(input_img,M,(cols,rows))
-plt.axis('off')
-plt.imshow(translated_image)
-plt.show()
-```
-## iii) Image Scaling
-```
-scale_factor = 1.5
-M_scale = np.float32([[scale_factor, 0, 0],
-                      [0, scale_factor, 0],
-                      [0, 0, 1]])
 
-scaled_img = cv2.warpAffine(input_img, M[:2], (int(cols*scale_factor), int(rows*scale_factor)))
-plt.axis('off')
-plt.imshow(scaled_img)
-plt.show()
-```
-## iv)Image shearing
-```
-M_x = np.float32([[1, 0.2, 0],
-                  [0, 1, 0],
-                  [0, 0, 1]])
+# Function to display image using Matplotlib
+def display_image(image, title):
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB for proper color display
+    plt.imshow(image_rgb)
+    plt.title(title)
+    plt.axis('off')
+    plt.show()
 
-sheared_img_xaxis = cv2.warpAffine(input_img, M_x[:2], (cols, rows))
-plt.axis('off')
-plt.imshow(sheared_img_xaxis)
-plt.show()
-M_y = np.float32([[1, 0, 0],
-                  [0.2, 1, 0],
-                  [0, 0, 1]])
+# Load an image
+image = cv2.imread('Harry.jpg')
+display_image(image, 'Original Image')
 
-sheared_img_yaxis = cv2.warpAffine(input_img, M_y[:2], (cols, rows))
-plt.axis('off')
-plt.imshow(sheared_img_yaxis)
-plt.show()
-```
-## v)Image Reflection
-```
-M_x = np.float32([[-1, 0, cols],
-                  [0, 1, 0],
-                  [0, 0, 1]])
 
-reflected_img_xaxis = cv2.warpAffine(input_img, M_x[:2], (cols, rows))
+# i) Image Translation
+def translate(img, x, y):
+    M = np.float32([[1, 0, x], [0, 1, y]])
+    translated = cv2.warpAffine(img, M, (img.shape[1], img.shape[0]))
+    return translated
 
-plt.axis("off")
-plt.imshow(reflected_img_xaxis)
-plt.show()
+translated_image = translate(image, 100, 50)
+display_image(translated_image, 'Translated Image')
 
-M_y = np.float32([[1, 0, 0],
-                  [0, -1, rows],
-                  [0, 0, 1]])
+# ii) Image Scaling
+def scale(img, scale_x, scale_y):
+    scaled = cv2.resize(img, None, fx=scale_x, fy=scale_y, interpolation=cv2.INTER_LINEAR)
+    return scaled
 
-reflected_img_yaxis = cv2.warpAffine(input_img, M_y[:2], (cols, rows))
+scaled_image = scale(image, 1.5, 1.5)
+display_image(scaled_image, 'Scaled Image')
 
-plt.axis("off")
-plt.imshow(reflected_img_yaxis)
-plt.show()
-```
-## vi)Image Rotation
-```
-angle = np.radians(-60)
-M = np.float32([[np.cos(angle), -np.sin(angle), 0],
-                [np.sin(angle), np.cos(angle), 0]])
-center = (cols // 2, rows // 2)
-M = cv2.getRotationMatrix2D(center, -60, 1.0)
-rotated_img = cv2.warpAffine(input_img, M, (cols, rows))
+# iii) Image Shearing
+def shear(img, shear_factor):
+    rows, cols, _ = img.shape
+    M = np.float32([[1, shear_factor, 0], [0, 1, 0]])
+    sheared = cv2.warpAffine(img, M, (cols, rows))
+    return sheared
 
-plt.axis('off')
-plt.imshow(rotated_img)
-plt.show()
-```
-## vii)Image Cropping
-```
-cropped_img = input_img[50:200, 200:400]
-plt.axis('off')
-plt.imshow(cropped_img)
-plt.show()
+sheared_image = shear(image, 0.5)
+display_image(sheared_image, 'Sheared Image')
+
+# iv) Image Reflection
+def reflect(img):
+    reflected = cv2.flip(img, 1)  # 1 for horizontal flip
+    return reflected
+
+reflected_image = reflect(image)
+display_image(reflected_image, 'Reflected Image')
+
+# v) Image Rotation
+def rotate(img, angle):
+    (h, w) = img.shape[:2]
+    center = (w // 2, h // 2)
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    rotated = cv2.warpAffine(img, M, (w, h))
+    return rotated
+
+rotated_image = rotate(image, 45)
+display_image(rotated_image, 'Rotated Image')
+
+# vi) Image Cropping
+def crop(img, start_row, start_col, end_row, end_col):
+    cropped = img[start_row:end_row, start_col:end_col]
+    return cropped
+
+cropped_image = crop(image, 50, 50, 200, 200)
+display_image(cropped_image, 'Cropped Image')
 ```
 
 ## Output:
-### i)Original image:
-![image](https://github.com/user-attachments/assets/6fc65b72-8665-4da6-8cb8-5b06c796fe7e)
+### Original image
 
-### ii)Image Translation:
-![image](https://github.com/user-attachments/assets/a305aec4-7922-490b-abbc-42cbba7b7518)
+![Harry](https://github.com/user-attachments/assets/846c1a3f-4625-410e-9016-d6899c3439c6)
 
-### iii) Image Scaling:
-![image](https://github.com/user-attachments/assets/69ee6090-8e0c-4db3-91a9-26e3557a3765)
 
-### iv)Image shearing:
-![image](https://github.com/user-attachments/assets/88fe0aa1-10c7-48ea-af16-22f38691bb63)
 
-### v)Image Reflection:
-![image](https://github.com/user-attachments/assets/dbe71684-3f38-4caa-b7d3-4ad0c8c91339)
 
-### vi)Image Rotation:
-![image](https://github.com/user-attachments/assets/a9d9ebbf-a23a-44a1-8d2b-e1500f8efc82)
+### i)Image Translation
 
-### vii)Image Cropping:
-![image](https://github.com/user-attachments/assets/32e7042e-3b93-4ae9-8d9d-39014c031290)
+![translate](https://github.com/user-attachments/assets/bb919f92-9042-465b-88bf-cf543aee23c4)
+
+
+
+### ii) Image Scaling
+
+
+![scaled](https://github.com/user-attachments/assets/168cb6e5-d82f-4bf2-a539-e3f796e83e37)
+
+
+### iii)Image shearing
+
+
+![sheared](https://github.com/user-attachments/assets/b72fc2b2-4089-446b-b988-f2eee6a0c31c)
+
+
+### iv)Image Reflection
+
+
+![reflected](https://github.com/user-attachments/assets/9b87b3f4-f055-4dea-8a96-e1697fd95374)
+
+
+### v)Image Rotation
+
+![rotate](https://github.com/user-attachments/assets/e0509a15-a260-4abf-a116-ce673687dc25)
+
+
+### vi)Image Cropping
+
+![cropped](https://github.com/user-attachments/assets/925af52d-86ed-4adb-b575-ef6f34e9f89c)
+
 
 
 ## Result: 
